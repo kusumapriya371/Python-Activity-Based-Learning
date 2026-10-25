@@ -1,0 +1,535 @@
+[
+  {
+    "id": 1,
+    "folder": "Case_Study_01_Scholarship",
+    "title": "University Scholarship Allocation",
+    "problem": "Design a program to assess scholarship applicants using aggregate marks, minimum subject marks, attendance, and annual family income. Eligible applicants are ranked using aggregate marks, then attendance, then lower income as tie-breakers.",
+    "objectives": [
+      "Validate applicant data against stated eligibility rules.",
+      "Calculate eligibility and explain rejection reasons.",
+      "Rank eligible applicants deterministically."
+    ],
+    "assumptions": [
+      "Aggregate and subject marks are percentages from 0 to 100.",
+      "Minimum aggregate is 80%, minimum subject mark is 70%, attendance is at least 85%, and annual family income is at most ₹300,000.",
+      "Sample data is illustrative and not an official scholarship policy."
+    ],
+    "algorithm": [
+      "Start and define sample applicant records.",
+      "For each applicant, check aggregate, all subject marks, attendance, and income.",
+      "Store the reasons for any failed conditions.",
+      "Collect eligible applicants and sort by aggregate descending, attendance descending, income ascending.",
+      "Display eligibility, reasons, and the ranked list."
+    ],
+    "pseudocode": [
+      "SET applicants to sample records",
+      "FOR each applicant",
+      "  CREATE empty reasons list",
+      "  CHECK aggregate, each subject mark, attendance, and income",
+      "  IF any condition fails, add reason to reasons",
+      "  IF reasons is empty, add applicant to eligible list",
+      "  ELSE display applicant and reasons",
+      "SORT eligible by aggregate descending, attendance descending, income ascending",
+      "DISPLAY ranked eligible list"
+    ],
+    "code": "# University Scholarship Allocation\n# Sample data; thresholds are assumptions for this assignment.\napplicants = [\n    (\"Asha\", 88, [82, 91, 79], 92, 240000),\n    (\"Bharat\", 84, [76, 72, 81], 88, 180000),\n    (\"Charan\", 79, [90, 86, 82], 95, 150000),\n    (\"Divya\", 91, [92, 88, 94], 81, 200000),\n]\n\neligible = []\nfor name, aggregate, subjects, attendance, income in applicants:\n    reasons = []\n    if aggregate < 80:\n        reasons.append(\"aggregate below 80%\")\n    for mark in subjects:\n        if mark < 70:\n            reasons.append(\"a subject mark below 70%\")\n            break\n    if attendance < 85:\n        reasons.append(\"attendance below 85%\")\n    if income > 300000:\n        reasons.append(\"income above Rs.300000\")\n\n    if len(reasons) == 0:\n        eligible.append((name, aggregate, attendance, income))\n        print(name, \": ELIGIBLE\")\n    else:\n        print(name, \": NOT ELIGIBLE -\", \", \".join(reasons))\n\neligible.sort(key=lambda item: (-item[1], -item[2], item[3]))\nprint(\"\\nScholarship ranking:\")\nfor rank, applicant in enumerate(eligible, start=1):\n    print(rank, applicant[0], \"Aggregate:\", applicant[1],\n          \"Attendance:\", applicant[2], \"Income:\", applicant[3])\n",
+    "tests": [
+      [
+        "Asha",
+        "88 aggregate; all subjects ≥70; attendance 92; income 240000",
+        "Eligible; appears in ranking"
+      ],
+      [
+        "Charan",
+        "Aggregate 79",
+        "Not eligible: aggregate below 80%"
+      ],
+      [
+        "Divya",
+        "Attendance 81",
+        "Not eligible: attendance below 85%"
+      ]
+    ],
+    "conclusion": "The program applies multiple eligibility conditions and ranks only qualified applicants. Its rules are configurable and should be replaced with the institution's official policy when required."
+  },
+  {
+    "id": 2,
+    "folder": "Case_Study_02_Payroll",
+    "title": "Employee Payroll and Deduction Analysis",
+    "problem": "Calculate employee gross salary from basic pay, allowances, overtime, and incentives. Apply progressive deductions and print a formatted salary statement.",
+    "objectives": [
+      "Calculate gross earnings from salary components.",
+      "Apply a simple progressive deduction policy.",
+      "Display gross pay, deduction, and net pay clearly."
+    ],
+    "assumptions": [
+      "HRA is 20% of basic pay and other allowance is 10%.",
+      "Overtime is paid at ₹200 per hour and incentives are supplied directly.",
+      "Illustrative deduction: 5% of gross up to ₹30,000; 10% of the amount above ₹30,000 up to ₹60,000; 15% of any amount above ₹60,000."
+    ],
+    "algorithm": [
+      "Read or define basic pay, overtime hours, and incentive.",
+      "Calculate allowances, overtime pay, and gross pay.",
+      "Calculate deduction in progressive bands.",
+      "Subtract deduction from gross pay.",
+      "Print a formatted salary statement."
+    ],
+    "pseudocode": [
+      "INPUT basic pay, overtime hours, incentive",
+      "CALCULATE HRA = 20% of basic",
+      "CALCULATE other allowance = 10% of basic",
+      "CALCULATE gross = basic + allowances + overtime pay + incentive",
+      "CALCULATE deduction by progressive bands",
+      "CALCULATE net = gross - deduction",
+      "DISPLAY salary statement"
+    ],
+    "code": "# Employee Payroll and Deduction Analysis\nbasic = 28000\novertime_hours = 6\nincentive = 2500\n\nhra = basic * 0.20\nother_allowance = basic * 0.10\novertime_pay = overtime_hours * 200\ngross = basic + hra + other_allowance + overtime_pay + incentive\n\n# Illustrative progressive deduction\ndeduction = 0\nif gross > 60000:\n    deduction = 30000 * 0.05 + 30000 * 0.10 + (gross - 60000) * 0.15\nelif gross > 30000:\n    deduction = 30000 * 0.05 + (gross - 30000) * 0.10\nelse:\n    deduction = gross * 0.05\n\nnet = gross - deduction\nprint(\"EMPLOYEE SALARY STATEMENT\")\nprint(\"Basic pay       : Rs.\", round(basic, 2))\nprint(\"HRA             : Rs.\", round(hra, 2))\nprint(\"Other allowance : Rs.\", round(other_allowance, 2))\nprint(\"Overtime pay    : Rs.\", round(overtime_pay, 2))\nprint(\"Incentive       : Rs.\", round(incentive, 2))\nprint(\"Gross salary    : Rs.\", round(gross, 2))\nprint(\"Deduction       : Rs.\", round(deduction, 2))\nprint(\"Net salary      : Rs.\", round(net, 2))\n",
+    "tests": [
+      [
+        "Normal salary",
+        "Basic ₹28,000; overtime 6 hours; incentive ₹2,500",
+        "Gross ₹40,100; deduction ₹2,510; net ₹37,590"
+      ],
+      [
+        "No overtime",
+        "Overtime hours = 0",
+        "Overtime pay = ₹0"
+      ],
+      [
+        "Low gross",
+        "Gross ≤ ₹30,000",
+        "Deduction = 5% of gross"
+      ]
+    ],
+    "conclusion": "The program demonstrates salary component calculations and progressive deductions. The rates are academic assumptions, not legal payroll or tax advice."
+  },
+  {
+    "id": 3,
+    "folder": "Case_Study_03_Retail_Billing",
+    "title": "Retail Billing with Multiple Discount Rules",
+    "problem": "Prepare an itemized retail invoice for multiple products, quantities, category-specific tax rates, threshold discounts, and a maximum discount limit.",
+    "objectives": [
+      "Calculate each product line total.",
+      "Apply a threshold discount without exceeding the discount cap.",
+      "Calculate category taxes and the final invoice amount."
+    ],
+    "assumptions": [
+      "Each item is represented as a tuple: name, unit price, quantity, tax rate percentage.",
+      "A 10% discount applies when pre-tax subtotal is at least ₹5,000, capped at ₹1,000.",
+      "Taxes are calculated after discount, proportionally across the taxable subtotal."
+    ],
+    "algorithm": [
+      "Read product tuples and calculate line totals.",
+      "Add line totals to subtotal.",
+      "Calculate discount based on threshold and cap.",
+      "Calculate taxable subtotal after discount.",
+      "Apply each product's tax rate to its discounted line share.",
+      "Display invoice totals."
+    ],
+    "pseudocode": [
+      "SET products list",
+      "SET subtotal = 0",
+      "FOR each product tuple",
+      "  CALCULATE line total and add to subtotal",
+      "IF subtotal >= 5000, discount = minimum(10% of subtotal, 1000), ELSE discount = 0",
+      "CALCULATE discount ratio = discount / subtotal",
+      "FOR each product, reduce line by discount ratio and calculate tax",
+      "DISPLAY lines, subtotal, discount, tax, and final total"
+    ],
+    "code": "# Retail Billing with Multiple Discount Rules\nproducts = [\n    (\"Notebook\", 120, 10, 5),\n    (\"Backpack\", 1200, 3, 12),\n    (\"Pen set\", 250, 4, 5),\n]\n\nsubtotal = 0\nfor name, price, quantity, tax_rate in products:\n    subtotal += price * quantity\n\nif subtotal >= 5000:\n    discount = min(subtotal * 0.10, 1000)\nelse:\n    discount = 0\n\ndiscount_ratio = discount / subtotal if subtotal > 0 else 0\ntotal_tax = 0\nprint(\"ITEMIZED INVOICE\")\nfor name, price, quantity, tax_rate in products:\n    line_total = price * quantity\n    discounted_line = line_total * (1 - discount_ratio)\n    tax = discounted_line * tax_rate / 100\n    total_tax += tax\n    print(name, \"Qty:\", quantity, \"Line:\", round(line_total, 2),\n          \"Tax:\", round(tax, 2))\n\nfinal_total = subtotal - discount + total_tax\nprint(\"Subtotal      : Rs.\", round(subtotal, 2))\nprint(\"Discount      : Rs.\", round(discount, 2))\nprint(\"Total tax     : Rs.\", round(total_tax, 2))\nprint(\"Final payable : Rs.\", round(final_total, 2))\n",
+    "tests": [
+      [
+        "Above threshold",
+        "Sample basket subtotal ₹5,800",
+        "10% discount = ₹580, below the ₹1,000 cap"
+      ],
+      [
+        "Below threshold",
+        "Subtotal ₹4,000",
+        "Discount ₹0"
+      ],
+      [
+        "Empty basket",
+        "No products",
+        "Subtotal and final total are ₹0; no division error"
+      ]
+    ],
+    "conclusion": "The program creates an itemized invoice and demonstrates list processing, loops, conditional discounts, and tax calculations."
+  },
+  {
+    "id": 4,
+    "folder": "Case_Study_04_Attendance_Recovery",
+    "title": "Attendance Recovery Computation",
+    "problem": "Calculate a student's current attendance percentage and determine the minimum number of consecutive classes the student must attend to reach a required attendance threshold.",
+    "objectives": [
+      "Calculate current attendance accurately.",
+      "Use a loop to find the minimum future classes required.",
+      "Handle already-eligible and impossible inputs."
+    ],
+    "assumptions": [
+      "Classes attended and total classes are non-negative integers; attended cannot exceed total.",
+      "The required attendance threshold is 75%.",
+      "Future scenario assumes every additional class is attended."
+    ],
+    "algorithm": [
+      "Set attended classes, total classes, and threshold.",
+      "Validate the input values.",
+      "Calculate current attendance percentage, or zero if total is zero.",
+      "If current percentage meets threshold, required classes are zero.",
+      "Otherwise increment future attended and total classes until the threshold is reached.",
+      "Display percentage and minimum classes needed."
+    ],
+    "pseudocode": [
+      "INPUT attended, total",
+      "IF attended < 0 OR total < 0 OR attended > total, DISPLAY invalid input",
+      "ELSE calculate current percentage",
+      "SET extra = 0",
+      "WHILE (attended + extra) / (total + extra) < threshold",
+      "  extra = extra + 1",
+      "DISPLAY current percentage and extra"
+    ],
+    "code": "# Attendance Recovery Computation\nattended = 42\ntotal = 60\nthreshold = 75\n\nif attended < 0 or total < 0 or attended > total:\n    print(\"Invalid attendance data\")\nelif total == 0 and attended == 0:\n    print(\"No classes recorded yet\")\nelse:\n    current = attended * 100 / total\n    extra = 0\n    while (attended + extra) * 100 / (total + extra) < threshold:\n        extra += 1\n    print(\"Current attendance:\", round(current, 2), \"%\")\n    if extra == 0:\n        print(\"Already eligible.\")\n    else:\n        print(\"Consecutive classes to attend:\", extra)\n    print(\"Attendance after those classes:\",\n          round((attended + extra) * 100 / (total + extra), 2), \"%\")\n",
+    "tests": [
+      [
+        "Already eligible",
+        "Attended 48 of 60",
+        "80%; required extra classes = 0"
+      ],
+      [
+        "Needs recovery",
+        "Attended 42 of 60",
+        "70%; required extra classes = 12"
+      ],
+      [
+        "Invalid",
+        "Attended 65; total 60",
+        "Invalid attendance data"
+      ]
+    ],
+    "conclusion": "The program uses a loop to find the smallest number of future attended classes that reaches the target percentage."
+  },
+  {
+    "id": 5,
+    "folder": "Case_Study_05_Inventory",
+    "title": "Warehouse Inventory Reconciliation",
+    "problem": "Reconcile opening stock, incoming stock, dispatched stock, and physically counted closing stock for multiple products. Identify discrepancies and calculate replenishment needs against target stock.",
+    "objectives": [
+      "Calculate expected closing stock.",
+      "Detect differences between expected and actual stock.",
+      "Calculate replenishment needed to reach target stock."
+    ],
+    "assumptions": [
+      "Each record is a tuple: product, opening, incoming, dispatched, actual closing, target stock.",
+      "All quantities must be non-negative integers.",
+      "Expected closing = opening + incoming − dispatched."
+    ],
+    "algorithm": [
+      "Read product records.",
+      "Validate quantities and prevent negative expected stock.",
+      "Calculate expected closing and compare it with actual closing.",
+      "Calculate discrepancy as actual minus expected.",
+      "Calculate replenishment as max(0, target minus actual).",
+      "Display reconciliation report."
+    ],
+    "pseudocode": [
+      "FOR each product record",
+      "  IF any quantity is negative or dispatched > opening + incoming",
+      "    DISPLAY invalid record",
+      "  ELSE",
+      "    expected = opening + incoming - dispatched",
+      "    discrepancy = actual - expected",
+      "    replenishment = maximum(0, target - actual)",
+      "    DISPLAY result"
+    ],
+    "code": "# Warehouse Inventory Reconciliation\nrecords = [\n    (\"Keyboard\", 50, 20, 35, 34, 50),\n    (\"Mouse\", 80, 10, 40, 50, 60),\n    (\"Monitor\", 25, 5, 12, 18, 20),\n]\n\nprint(\"WAREHOUSE RECONCILIATION\")\nfor name, opening, incoming, dispatched, actual, target in records:\n    if min(opening, incoming, dispatched, actual, target) < 0:\n        print(name, \"- INVALID: negative quantity\")\n    elif dispatched > opening + incoming:\n        print(name, \"- INVALID: dispatch exceeds available stock\")\n    else:\n        expected = opening + incoming - dispatched\n        discrepancy = actual - expected\n        replenishment = max(0, target - actual)\n        if discrepancy == 0:\n            status = \"MATCH\"\n        elif discrepancy < 0:\n            status = \"SHORTAGE\"\n        else:\n            status = \"SURPLUS\"\n        print(name, \"Expected:\", expected, \"Actual:\", actual,\n              \"Difference:\", discrepancy, status,\n              \"Replenish:\", replenishment)\n",
+    "tests": [
+      [
+        "Matching stock",
+        "Opening 50, incoming 20, dispatched 35, actual 35",
+        "Expected 35; difference 0"
+      ],
+      [
+        "Stock shortage",
+        "Expected 35, actual 34",
+        "Difference -1; shortage"
+      ],
+      [
+        "Invalid dispatch",
+        "Opening 10, incoming 2, dispatched 15",
+        "Invalid: dispatch exceeds available stock"
+      ]
+    ],
+    "conclusion": "The program compares theoretical and physical stock, flags discrepancies, and estimates replenishment quantities."
+  },
+  {
+    "id": 6,
+    "folder": "Case_Study_06_Password_Validation",
+    "title": "Password Policy Validation Engine",
+    "problem": "Evaluate sample password strings against minimum length, uppercase, lowercase, digit, special-character, repeated-character, and prohibited-substring rules. Explain every failed condition.",
+    "objectives": [
+      "Validate passwords using string operations and loops.",
+      "Report all failed rules rather than stopping at the first failure.",
+      "Classify a password as accepted or rejected."
+    ],
+    "assumptions": [
+      "Minimum length is 8 characters.",
+      "A password must contain uppercase, lowercase, a digit, and one special character from !@#$%&*.",
+      "Three identical consecutive characters are prohibited; the substring 'password' is prohibited without case sensitivity."
+    ],
+    "algorithm": [
+      "Set sample passwords and policy rules.",
+      "For each password, create a list of failures.",
+      "Check length and character categories.",
+      "Check prohibited substring and three consecutive identical characters.",
+      "Print accepted or rejected and list failures."
+    ],
+    "pseudocode": [
+      "FOR each password",
+      "  SET failures to empty list",
+      "  CHECK length >= 8",
+      "  SCAN characters for uppercase, lowercase, digit, and special character",
+      "  CHECK prohibited substring",
+      "  CHECK every group of 3 consecutive characters",
+      "  IF failures empty, DISPLAY ACCEPTED",
+      "  ELSE DISPLAY REJECTED and failures"
+    ],
+    "code": "# Password Policy Validation Engine\npasswords = [\"Kusuma@2026\", \"abc123\", \"Strong!!!9A\", \"password#9A\"]\n\nfor password in passwords:\n    failures = []\n    if len(password) < 8:\n        failures.append(\"must contain at least 8 characters\")\n\n    upper = lower = digit = special = False\n    for ch in password:\n        if ch.isupper():\n            upper = True\n        if ch.islower():\n            lower = True\n        if ch.isdigit():\n            digit = True\n        if ch in \"!@#$%&*\":\n            special = True\n\n    if not upper:\n        failures.append(\"needs an uppercase letter\")\n    if not lower:\n        failures.append(\"needs a lowercase letter\")\n    if not digit:\n        failures.append(\"needs a digit\")\n    if not special:\n        failures.append(\"needs a special character from !@#$%&*\")\n    if \"password\" in password.lower():\n        failures.append(\"contains prohibited word 'password'\")\n\n    repeated = False\n    for i in range(len(password) - 2):\n        if password[i] == password[i + 1] == password[i + 2]:\n            repeated = True\n    if repeated:\n        failures.append(\"contains three identical consecutive characters\")\n\n    if len(failures) == 0:\n        print(password, \": ACCEPTED\")\n    else:\n        print(password, \": REJECTED\")\n        for failure in failures:\n            print(\" -\", failure)\n",
+    "tests": [
+      [
+        "Strong password",
+        "Kusuma@2026",
+        "Accepted"
+      ],
+      [
+        "Too short",
+        "abc123",
+        "Rejected for length and missing character categories"
+      ],
+      [
+        "Repeated characters",
+        "Strong!!!9A",
+        "Rejected for three consecutive identical characters"
+      ],
+      [
+        "Prohibited substring",
+        "password#9A",
+        "Rejected because the prohibited substring 'password' is present"
+      ]
+    ],
+    "conclusion": "The program demonstrates string methods, character scanning, and multiple validation rules. It is an educational example and is not a complete production security checker."
+  },
+  {
+    "id": 7,
+    "folder": "Case_Study_07_Marks_Matrix",
+    "title": "Student Marks Matrix Analysis",
+    "problem": "Analyse a nested list of marks for multiple students across multiple subjects. Calculate student totals and averages, subject averages, identify the top performer, and flag subjects with low average marks.",
+    "objectives": [
+      "Use nested lists to store a marks matrix.",
+      "Calculate row-wise and column-wise statistics.",
+      "Identify top student and weak subjects."
+    ],
+    "assumptions": [
+      "Marks are integers from 0 to 100.",
+      "Every student has marks for the same subjects.",
+      "A subject average below 50 is flagged as low."
+    ],
+    "algorithm": [
+      "Define student names, subject names, and marks matrix.",
+      "Validate each mark.",
+      "Calculate each student's total and average.",
+      "Calculate each subject's average using column positions.",
+      "Find top performer by total marks and flag low-average subjects.",
+      "Print summary."
+    ],
+    "pseudocode": [
+      "FOR each row in marks matrix, calculate total and average",
+      "FOR each subject column, add marks across all students and calculate average",
+      "FIND student with maximum total",
+      "FOR each subject, IF average < 50, flag as low",
+      "DISPLAY all statistics"
+    ],
+    "code": "# Student Marks Matrix Analysis\nstudents = [\"Asha\", \"Bharat\", \"Charan\", \"Divya\"]\nsubjects = [\"Python\", \"Maths\", \"Computing\"]\nmarks = [\n    [88, 76, 91],\n    [65, 72, 68],\n    [42, 48, 55],\n    [95, 89, 93],\n]\n\nvalid = True\nfor row in marks:\n    for mark in row:\n        if mark < 0 or mark > 100:\n            valid = False\n\nif not valid:\n    print(\"Invalid marks: values must be from 0 to 100\")\nelse:\n    totals = []\n    print(\"STUDENT RESULTS\")\n    for i in range(len(students)):\n        total = sum(marks[i])\n        average = total / len(subjects)\n        totals.append(total)\n        print(students[i], \"Total:\", total, \"Average:\", round(average, 2))\n\n    print(\"\\nSUBJECT AVERAGES\")\n    for j in range(len(subjects)):\n        total = 0\n        for i in range(len(students)):\n            total += marks[i][j]\n        average = total / len(students)\n        print(subjects[j], \"Average:\", round(average, 2),\n              \"LOW AVERAGE\" if average < 50 else \"\")\n\n    top_index = totals.index(max(totals))\n    print(\"\\nTop performer:\", students[top_index],\n          \"with total\", totals[top_index])\n",
+    "tests": [
+      [
+        "Normal matrix",
+        "All marks within 0–100",
+        "Totals, averages, subject averages, and top performer displayed"
+      ],
+      [
+        "Low subject average",
+        "One subject average below 50",
+        "Subject flagged LOW AVERAGE"
+      ],
+      [
+        "Invalid mark",
+        "Any mark = 105",
+        "Invalid marks message"
+      ]
+    ],
+    "conclusion": "The program demonstrates nested-list traversal and row-wise/column-wise calculations for academic performance analysis."
+  },
+  {
+    "id": 8,
+    "folder": "Case_Study_08_Sports_Ranking",
+    "title": "Sports Tournament Ranking System",
+    "problem": "Store match outcomes for several teams, calculate points and goal difference, and rank teams using points, goal difference, and goals scored as tie-breakers.",
+    "objectives": [
+      "Represent match data with tuples.",
+      "Calculate points from match results.",
+      "Rank teams using clear tie-breaking rules."
+    ],
+    "assumptions": [
+      "A win earns 3 points, a draw earns 1 point, and a loss earns 0 points.",
+      "Match tuples contain home team, away team, home score, and away score.",
+      "All scores are non-negative integers."
+    ],
+    "algorithm": [
+      "Define teams and match tuples.",
+      "Initialize points, goal difference, and goals scored for every team.",
+      "For each match, update goals scored and goal difference.",
+      "Award points based on result.",
+      "Sort teams by points, goal difference, and goals scored, all descending.",
+      "Display ranking."
+    ],
+    "pseudocode": [
+      "INITIALIZE statistics for each team",
+      "FOR each match tuple",
+      "  UPDATE goals scored and goal difference for both teams",
+      "  IF home score > away score, award 3 points to home",
+      "  ELSE IF scores equal, award 1 point to each",
+      "  ELSE award 3 points to away",
+      "SORT by points descending, goal difference descending, goals scored descending",
+      "DISPLAY ranking"
+    ],
+    "code": "# Sports Tournament Ranking System\nteams = [\"Falcons\", \"Tigers\", \"Eagles\", \"Sharks\"]\nmatches = [\n    (\"Falcons\", \"Tigers\", 2, 1),\n    (\"Eagles\", \"Sharks\", 1, 1),\n    (\"Falcons\", \"Eagles\", 0, 1),\n    (\"Tigers\", \"Sharks\", 3, 0),\n    (\"Falcons\", \"Sharks\", 2, 2),\n    (\"Tigers\", \"Eagles\", 1, 2),\n]\n\n# Parallel lists: points, goal difference, and goals scored\npoints = [0] * len(teams)\ngoal_difference = [0] * len(teams)\ngoals_scored = [0] * len(teams)\n\nfor home, away, home_score, away_score in matches:\n    if home_score < 0 or away_score < 0:\n        print(\"Invalid score in match:\", home, away)\n        continue\n    h = teams.index(home)\n    a = teams.index(away)\n    goals_scored[h] += home_score\n    goals_scored[a] += away_score\n    goal_difference[h] += home_score - away_score\n    goal_difference[a] += away_score - home_score\n\n    if home_score > away_score:\n        points[h] += 3\n    elif home_score == away_score:\n        points[h] += 1\n        points[a] += 1\n    else:\n        points[a] += 3\n\n# Rank team indices by points, goal difference, then goals scored.\nranking = list(range(len(teams)))\nfor i in range(len(ranking)):\n    for j in range(i + 1, len(ranking)):\n        left = ranking[i]\n        right = ranking[j]\n        if (points[right] > points[left] or\n            (points[right] == points[left] and goal_difference[right] > goal_difference[left]) or\n            (points[right] == points[left] and goal_difference[right] == goal_difference[left]\n             and goals_scored[right] > goals_scored[left])):\n            ranking[i], ranking[j] = ranking[j], ranking[i]\n\nprint(\"TOURNAMENT RANKING\")\nfor position, index in enumerate(ranking, start=1):\n    print(position, teams[index], \"Points:\", points[index],\n          \"Goal difference:\", goal_difference[index],\n          \"Goals scored:\", goals_scored[index])\n",
+    "tests": [
+      [
+        "Win",
+        "Home score 2, away score 1",
+        "Home team gets 3 points"
+      ],
+      [
+        "Draw",
+        "Score 1–1",
+        "Both teams get 1 point"
+      ],
+      [
+        "Tie-break",
+        "Equal points",
+        "Goal difference, then goals scored determine order"
+      ]
+    ],
+    "conclusion": "The program uses tuples, parallel lists, nested loops, and conditional statements to create a deterministic tournament table without relying on dictionaries."
+  },
+  {
+    "id": 9,
+    "folder": "Case_Study_09_Smart_Canteen",
+    "title": "Smart Canteen Order and Stock Management",
+    "problem": "Process a sequence of canteen orders, calculate bills, update inventory, reject orders that exceed available stock, and summarize sales and remaining stock.",
+    "objectives": [
+      "Maintain product stock in lists.",
+      "Validate order quantities before accepting an order.",
+      "Calculate sales and report remaining stock."
+    ],
+    "assumptions": [
+      "Each order is a tuple of product name and quantity.",
+      "Prices and initial stock are supplied in parallel lists.",
+      "Only positive quantities and known product names are accepted."
+    ],
+    "algorithm": [
+      "Define menu items, prices, stock, and sample orders.",
+      "For each order, locate the product.",
+      "Reject unknown products, non-positive quantities, or quantities exceeding stock.",
+      "Otherwise calculate bill, reduce stock, and add to total sales.",
+      "Display each order result and final stock."
+    ],
+    "pseudocode": [
+      "SET menu, prices, stock, and orders",
+      "SET total_sales = 0",
+      "FOR each order",
+      "  FIND product index",
+      "  IF not found, reject",
+      "  ELSE IF quantity <= 0, reject",
+      "  ELSE IF quantity > stock, reject",
+      "  ELSE calculate bill, reduce stock, add bill to sales",
+      "DISPLAY total sales and remaining stock"
+    ],
+    "code": "# Smart Canteen Order and Stock Management\nmenu = [\"Idli\", \"Dosa\", \"Sandwich\", \"Juice\"]\nprices = [30, 50, 70, 40]\nstock = [40, 25, 15, 20]\norders = [\n    (\"Idli\", 4),\n    (\"Dosa\", 2),\n    (\"Sandwich\", 20),  # rejected: insufficient stock\n    (\"Juice\", 3),\n    (\"Unknown\", 1),    # rejected: not on menu\n]\n\ntotal_sales = 0\nfor product, quantity in orders:\n    if product not in menu:\n        print(\"REJECTED:\", product, \"- product not found\")\n    elif quantity <= 0:\n        print(\"REJECTED:\", product, \"- quantity must be positive\")\n    else:\n        index = menu.index(product)\n        if quantity > stock[index]:\n            print(\"REJECTED:\", product, \"- insufficient stock\")\n        else:\n            bill = prices[index] * quantity\n            stock[index] -= quantity\n            total_sales += bill\n            print(\"ACCEPTED:\", product, \"Qty:\", quantity,\n                  \"Bill: Rs.\", bill)\n\nprint(\"\\nTotal sales: Rs.\", total_sales)\nprint(\"REMAINING STOCK\")\nfor i in range(len(menu)):\n    print(menu[i], \":\", stock[i])\n",
+    "tests": [
+      [
+        "Valid order",
+        "Idli quantity 4; stock 40",
+        "Accepted; bill ₹120; stock becomes 36"
+      ],
+      [
+        "Insufficient stock",
+        "Sandwich quantity 20; stock 15",
+        "Rejected; stock unchanged"
+      ],
+      [
+        "Unknown item",
+        "Product 'Unknown'",
+        "Rejected: product not found"
+      ],
+      [
+        "Invalid quantity",
+        "Quantity 0",
+        "Rejected: quantity must be positive"
+      ]
+    ],
+    "conclusion": "The program simulates order processing, stock control, and daily sales using lists, tuples, loops, and conditional statements."
+  },
+  {
+    "id": 10,
+    "folder": "Case_Study_10_Student_Record_Audit",
+    "title": "Integrated Student Record Consistency Checker",
+    "problem": "Validate student identifiers, names, marks, attendance, and course records. Detect duplicate roll numbers, missing fields, invalid marks or attendance, and inconsistent records.",
+    "objectives": [
+      "Validate records using strings, lists, and tuples.",
+      "Identify duplicate identifiers and invalid values.",
+      "Generate a reason-wise consistency report."
+    ],
+    "assumptions": [
+      "Each record is a tuple: roll number, name, marks, attendance, course code.",
+      "Roll numbers must be unique and non-empty.",
+      "Marks must be between 0 and 100, attendance between 0 and 100, and name/course code must not be empty."
+    ],
+    "algorithm": [
+      "Define sample student tuples.",
+      "Scan records and count each roll number.",
+      "For each record, create an error list.",
+      "Check duplicate roll number, missing values, marks, attendance, and course code.",
+      "Display VALID or INVALID with reasons."
+    ],
+    "pseudocode": [
+      "COUNT occurrences of each roll number",
+      "FOR each student tuple",
+      "  SET errors to empty list",
+      "  CHECK missing fields",
+      "  CHECK roll number count > 1",
+      "  CHECK marks range 0–100",
+      "  CHECK attendance range 0–100",
+      "  CHECK course code not empty",
+      "  DISPLAY VALID if no errors; otherwise display errors"
+    ],
+    "code": "# Integrated Student Record Consistency Checker\nrecords = [\n    (\"26000293\", \"Kusuma Priya\", 92, 96, \"CSE101\"),\n    (\"26000294\", \"Yamuna\", 78, 82, \"CSE101\"),\n    (\"26000293\", \"Duplicate Roll\", 65, 75, \"CSE102\"),\n    (\"26000296\", \"\", 108, 110, \"\"),\n]\n\nroll_numbers = []\nfor record in records:\n    roll_numbers.append(record[0])\n\nprint(\"STUDENT RECORD AUDIT\")\nfor roll, name, marks, attendance, course in records:\n    errors = []\n    if roll == \"\":\n        errors.append(\"missing roll number\")\n    if roll_numbers.count(roll) > 1:\n        errors.append(\"duplicate roll number\")\n    if name.strip() == \"\":\n        errors.append(\"missing student name\")\n    if marks < 0 or marks > 100:\n        errors.append(\"marks outside 0-100\")\n    if attendance < 0 or attendance > 100:\n        errors.append(\"attendance outside 0-100\")\n    if course.strip() == \"\":\n        errors.append(\"missing course code\")\n\n    if len(errors) == 0:\n        print(roll, name, \": VALID\")\n    else:\n        print(roll, name if name else \"(no name)\", \": INVALID\")\n        for error in errors:\n            print(\" -\", error)\n",
+    "tests": [
+      [
+        "Valid record",
+        "Unique roll; name/course present; marks 92; attendance 96",
+        "VALID"
+      ],
+      [
+        "Duplicate roll",
+        "Two records use roll 26000293",
+        "Both flagged duplicate"
+      ],
+      [
+        "Invalid values",
+        "Marks 108; attendance 110; empty name/course",
+        "All corresponding errors reported"
+      ]
+    ],
+    "conclusion": "The program audits student records and explains consistency errors. The sample records are fictional and should not be treated as official student data."
+  }
+]
